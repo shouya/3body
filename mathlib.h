@@ -3,6 +3,8 @@
 
 #include "vector.h"
 
+#define PI 3.141592654
+
 class Object;
 
 double distance(const Object& obj1, const Object& obj2);

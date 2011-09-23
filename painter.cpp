@@ -9,6 +9,7 @@
 #include "object.h"
 #include "cosmos.h"
 #include "body.h"
+#include "config.h"
 
 struct Painter::color_list_t* Painter::s_clrlst = NULL;
 
@@ -35,7 +36,10 @@ void Painter::draw(Interface* interface) const {
     objs_t::const_iterator it = interface->cosmos_->objects().begin();
 
     /* comment next line to show trace */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    if (!g_config.show_trace_) {
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    }
 
     glPushMatrix();
     while (it != interface->cosmos_->objects().end()) {
@@ -50,13 +54,32 @@ void Painter::draw(Interface* interface) const {
 void Painter::drawObject(Interface* interface, const Object& obj) const {
     static int rngx = interface->cosmos_->rangeX(),
         rngy = interface->cosmos_->rangeY();
+    static double x, y, radius;
+    static int precision;
+    static float r, g, b;
 
-    drawCircle(obj.x() / rngx, obj.y() / rngy, (obj.mass() / 1e10) + 0.003,
-              s_clrlst[obj.id()].r, s_clrlst[obj.id()].g, s_clrlst[obj.id()].b,
-               20);
-    glBegin(GL_LINES);
-    glVertex2f(obj.x()/rngx, obj.y()/rngy);
-    glVertex2f(obj.x()/rngx+obj.acceleration().x()/(rngx*0.03),
-               obj.y()/rngy+obj.acceleration().y()/(rngy*0.03));
-    glEnd();
+    x = obj.x() / rngx;
+    y = obj.y() / rngy;
+
+    if (g_config.display_mode_ == DISPLAY_MASS) {
+        radius = sqrt(obj.mass()) / (rngx*rngy) + 0.003;
+    } else if (g_config.display_mode_ == DISPLAY_RADIUS) {
+        radius = obj.radius() / sqrt(rngx*rngy);
+    } else {
+        radius = 0.003;
+    }
+    precision = g_config.precision_;
+    r = s_clrlst[obj.id()].r;
+    g = s_clrlst[obj.id()].g;
+    b = s_clrlst[obj.id()].b;
+
+    drawCircle(x, y, radius, r, g, b, precision);
+
+    if (g_config.show_mline_) {
+        glBegin(GL_LINES);
+        glVertex2f(x, y);
+        glVertex2f(x + obj.acceleration().x()/(rngx*0.03),
+                   y + obj.acceleration().y()/(rngy*0.03));
+        glEnd();
+    }
 }

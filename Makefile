@@ -1,37 +1,47 @@
 CC=gcc
-FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -g
+FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -O2
 OUT=3body
 
-all: blackhole body cosmos interface mathlib object painter 3body config
+OBJS=3body.o blackhole.o body.o config.o cosmos.o interface.o mathlib.o \
+ object.o painter.o
+
+all: $(OBJS)
 	gcc $(FLAGS) -o $(OUT) *.o
 
+3body.o: 3body.cpp 3body.h interface.h cosmos.h object.h vector.h \
+ painter.h config.h body.h blackhole.h
+	gcc -c $(FLAGS) $< 
 
-blackhole: blackhole.cpp blackhole.h
-	gcc -c $(FLAGS) blackhole.cpp
+blackhole.o: blackhole.cpp blackhole.h object.h vector.h cosmos.h \
+ painter.h config.h
+	gcc -c $(FLAGS) $< 
 
-body: body.cpp body.h
-	gcc -c $(FLAGS) body.cpp
+body.o: body.cpp body.h object.h vector.h cosmos.h painter.h config.h \
+ mathlib.h
+	gcc -c $(FLAGS) $< 
 
-cosmos: cosmos.cpp cosmos.h
-	gcc -c $(FLAGS) cosmos.cpp
+config.o: config.cpp config.h object.h vector.h cosmos.h painter.h body.h \
+ blackhole.h
+	gcc -c $(FLAGS) $< 
 
-interface: interface.cpp interface.h
-	gcc -c $(FLAGS) interface.cpp
+cosmos.o: cosmos.cpp cosmos.h object.h vector.h painter.h config.h \
+ mathlib.h body.h blackhole.h
+	gcc -c $(FLAGS) $< 
 
-mathlib: mathlib.cpp mathlib.h
-	gcc -c $(FLAGS) mathlib.cpp
+interface.o: interface.cpp interface.h painter.h cosmos.h object.h \
+ vector.h config.h
+	gcc -c $(FLAGS) $< 
 
-object: object.cpp object.h
-	gcc -c $(FLAGS) object.cpp
+mathlib.o: mathlib.cpp mathlib.h vector.h object.h cosmos.h painter.h \
+ config.h
+	gcc -c $(FLAGS) $< 
 
-painter: painter.cpp painter.h
-	gcc -c $(FLAGS) painter.cpp
+object.o: object.cpp object.h vector.h cosmos.h painter.h config.h	
+	gcc -c $(FLAGS) $< 
 
-3body: 3body.cpp 3body.h
-	gcc -c $(FLAGS) 3body.cpp
-
-config: config.cpp config.h
-	gcc -c $(FLAGS) config.cpp
+painter.o: painter.cpp painter.h interface.h mathlib.h vector.h object.h \
+ cosmos.h config.h body.h
+	gcc -c $(FLAGS) $< 
 
 
 clean:

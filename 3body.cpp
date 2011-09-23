@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstdio>
 #include <ctime>
 
 #include "3body.h"
@@ -8,28 +9,38 @@
 #include "painter.h"
 #include "body.h"
 #include "blackhole.h"
+#include "config.h"
 
 int main(int argc, char** argv) {
     Interface* ui;
     Cosmos* cosmos;
 
+    g_config.loadConfig("3body.conf");
+    g_config.parseConfig();
+
+    printf("config arguments:\n");
+    printf("fps: %f\n", g_config.fps_);
+    printf("show trace: %s\n", g_config.show_trace_ ? "yes" : "no");
+    printf("show motion line: %s\n", g_config.show_mline_ ? "yes" : "no");
+    printf("full screen: %s\n", g_config.fulscr_ ? "yes" : "no");
+    printf("cosmos x-range: %ld\n", g_config.xrng_);
+    printf("cosmos y-range: %ld\n", g_config.yrng_);
+    printf("screen width: %d\n", g_config.scrw_);
+    printf("screen height: %d\n", g_config.scrh_);
+    printf("gravitational contant: %e\n", g_config.gconst_);
+
+
     ui = new Interface;
     ui->init();
 
+
     cosmos = new Cosmos();
-
-    srand(time(NULL));
-    cosmos->addObject(new BlackHole(rand()%100-50, rand()%100-50,
-                                    3e8));
-    for (int i = 0; i != atol(argv[1]); ++i) {
-        cosmos->addObject(new Body(rand()%1000-500, rand()%1000-500,
-                                   rand()%100 * 1e6+1,
-                                   Vector(rand()%2-1,rand()%2-1)
-                              ));
-    }
-
+    cosmos->loadFromConfig();
+    
     ui->setCosmos(cosmos);
     ui->setPainter(new Painter());
+
+    printf("Initialize complete.\n\n");
 
     ui->mainLoop();
 

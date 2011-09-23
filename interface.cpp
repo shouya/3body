@@ -7,6 +7,7 @@
 
 #include "painter.h"
 #include "cosmos.h"
+#include "config.h"
 
 #include <cstdio>
 
@@ -18,29 +19,29 @@ void Interface::init(void) {
     SDL_EnableUNICODE(SDL_TRUE);
 
     flags = SDL_HWSURFACE | SDL_OPENGL | SDL_GL_DOUBLEBUFFER;
-    /* full screen */
-    /*flags |= SDL_FULLSCREEN;*/
+
+    if (g_config.fulscr_) {
+        flags |= SDL_FULLSCREEN;
+    }
 
     sfc_ = SDL_SetVideoMode(
-        WIDTH, HEIGHT, 32, flags
+        g_config.scrw_, g_config.scrh_, 32, flags
         );
 
     /* OpenGL */
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
-    glViewport(0, 0, WIDTH, HEIGHT);
+    glViewport(0, 0, g_config.scrw_, g_config.scrh_);
     glDisable(GL_DEPTH_TEST);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(-WIDTH, WIDTH, HEIGHT, -HEIGHT, 10, 10);
+    glOrtho(-g_config.scrw_, g_config.scrw_,
+            g_config.scrh_, -g_config.scrh_, 10, 10);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    /* data member intialization */
-    fps_ = 30.0;
 }
 
 void Interface::mainLoop(void) {
@@ -50,14 +51,16 @@ void Interface::mainLoop(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    nx_tick = SDL_GetTicks() + (1000 / fps_);
+    nx_tick = SDL_GetTicks() + (1000 / g_config.fps_);
 
     while (!can_exit) {
         if (SDL_PollEvent(&event)) {
             /* handle event */
             switch (event.type) {
             case SDL_KEYDOWN:
-                (event.key.keysym.sym == SDLK_q) && (can_exit = 1);
+                if (dealHotkeys(&event.key.keysym)) can_exit = 1;
+                /*
+                */
                 break;
             case SDL_QUIT:
                 can_exit = 1;
@@ -74,7 +77,7 @@ void Interface::mainLoop(void) {
         /* move event */
         if (SDL_GetTicks() >= nx_tick) {
             cosmos_->doMove();
-            nx_tick = SDL_GetTicks() + (1000 / fps_);
+            nx_tick = SDL_GetTicks() + (1000 / g_config.fps_);
         }
 
         SDL_Delay(1);
@@ -89,3 +92,31 @@ void Interface::setPainter(Painter* painter) {
     painter_ = painter;
 }
 
+
+int Interface::dealHotkeys(SDL_keysym* key) {
+    switch (key->sym) {
+    case SDLK_q:
+        return 1; /* return non-zero means exit */
+    case SDLK_t:
+        g_config.show_trace_ = !g_config.show_trace_;
+        break;
+    case SDLK_m:
+        g_config.show_mline_ = !g_config.show_mline_;
+        break;
+    case SDLK_LEFTBRACKET:
+        --g_config.fps_;
+        break;
+    case SDLK_RIGHTBRACKET:
+        ++g_config.fps_;
+        break;
+    case SDLK_c:
+        if (g_config.display_mode_ == DISPLAY_MASS) {
+            g_config.display_mode_ = DISPLAY_RADIUS;
+        } else {
+            g_config.display_mode_ = DISPLAY_MASS;
+        }
+        break;
+    default:;
+    }
+    return 0;
+}

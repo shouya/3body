@@ -3,9 +3,11 @@
 
 #include "object.h"
 
+#define T_BLACKHOLE 3
+
 class BlackHole : public Object {
 public:
-    BlackHole(double x, double y, double mass);
+    BlackHole(double x, double y, double mass, double radius = 1);
 
     virtual void calcAccel(objs_t& pert_objs, const Cosmos& cosmos);
 };

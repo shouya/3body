@@ -3,8 +3,9 @@
 #include "mathlib.h"
 
 
-Body::Body(double x, double y, double mass, const Vector& accel) :
-    Object(x, y, mass, accel)
+Body::Body(double x, double y, double mass, double radius,
+           const Vector& accel) :
+    Object(T_BODY, x, y, mass, radius, accel)
 {}
 
 void Body::calcAccel(objs_t& pert_objs, const Cosmos& cosmos) {
@@ -15,7 +16,8 @@ void Body::calcAccel(objs_t& pert_objs, const Cosmos& cosmos) {
 
     it = pert_objs.begin();
     while (it != pert_objs.end()) {
-        if ((*it)->id() == id()) {
+        /*   is self            or  was dead */
+        if ((*it)->id() == id() || (*it)->isDead()) {
             ++it; continue;
         }
         tmpa += gravitation(*this, **it, cosmos.GConstant());
@@ -26,7 +28,6 @@ void Body::calcAccel(objs_t& pert_objs, const Cosmos& cosmos) {
                acceleration().x(),  acceleration().y(),
                tmpa_.x(), tmpa_.y());
 */
-    
 
     /* Newton's second law
      *    a = F/m
