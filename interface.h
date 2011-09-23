@@ -21,11 +21,11 @@ private:
     SDL_Surface* sfc_;
     Cosmos* cosmos_;
     Painter* painter_;
-    int fps_;
+    float fps_;
 
 private:
     enum {
-        WIDTH = 800,
+        WIDTH = 600,
         HEIGHT = 600
     };
 

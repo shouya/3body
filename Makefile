@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS= -Wall -lstdc++ 
+FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -g
 OUT=3body
 
 all: blackhole body cosmos interface mathlib object painter 3body

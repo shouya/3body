@@ -7,12 +7,19 @@ class BlackHole;
 class Object;
 
 class Painter {
+public:
+    Painter(void);
     void draw(Interface* interface) const;
 
-    /* a clever way to recognition different objects, use overload functions */
-    void drawObject(Interface* interface, const Body& obj) const;
-    void drawObject(Interface* interface, const BlackHole& obj) const;
-//    void drawObject(const Object& obj) const;
+private:
+
+    void drawObject(Interface* interface, const Object& obj) const;
+
+private:
+    struct color_list_t {
+        float r, g, b;
+    };
+    static struct color_list_t* s_clrlst;
 };
 
 #endif /* __PAINTER_H__ */

@@ -1,38 +1,62 @@
+#include <cmath>
+
 #include <SDL/SDL.h>
+#include <GL/gl.h>
 
 #include "painter.h"
 #include "interface.h"
+#include "mathlib.h"
+#include "object.h"
+#include "cosmos.h"
+#include "body.h"
 
+struct Painter::color_list_t* Painter::s_clrlst = NULL;
 
-static void drawCircle(float x, float y, double radius,
-                       float r, float g, float b, int div_parts) {
+Painter::Painter(void) {
+    float r, g, b;
     int i = 0;
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f(r, g, b, 1.0f);
-    glVertex2f(x, y);
-    for (; i != div_parts; ++i) {
-        glVertex2f(x + r*cos(2*PI/div_parts * i),
-                   y + r*sin(2*PI/div_parts * i));
+    if (s_clrlst == NULL) {
+        s_clrlst = new Painter::color_list_t[512];
+        for (r = 0.3f; r <= 1.0f; r += 0.1f) {
+            for (g = 0.3f; g <= 1.0f; g += 0.1f) {
+                for (b = 0.3f; b <= 1.0f; b += 0.1f) {
+                    s_clrlst[i].r = r;
+                    s_clrlst[i].g = g;
+                    s_clrlst[i].b = b;
+                    ++i;
+                }
+            }
+        }
     }
-    glEnd();
+    
 }
 
 void Painter::draw(Interface* interface) const {
-    objs_t it = interface->cosmos_->objects().begin();
+    objs_t::const_iterator it = interface->cosmos_->objects().begin();
 
+    /* comment next line to show trace */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glPushMatrix();
     while (it != interface->cosmos_->objects().end()) {
-        drawObject(interface, *it);
+        drawObject(interface, **it);
         ++it;
     }
+    glPopMatrix();
+
     SDL_GL_SwapBuffers();
 }
 
-void Painter::drawObject(Interface* interface, const Body& obj) const {
-    SDL_Surface* sfc = interface->sfc_;
-    drawCircle(obj.x(), obj.y(), obj.mass(), 1, 1, 1, 20);
-}
-void Painter::drawObject(Interface* interface, const BlackHole& obj) const {
-    SDL_Surface* sfc = interface->sfc_;
-    drawCircle(obj.x(), obj.y(), obj.mass(), 1, 1, 1, 20);
+void Painter::drawObject(Interface* interface, const Object& obj) const {
+    static int rngx = interface->cosmos_->rangeX(),
+        rngy = interface->cosmos_->rangeY();
+
+    drawCircle(obj.x() / rngx, obj.y() / rngy, (obj.mass() / 1e10) + 0.003,
+              s_clrlst[obj.id()].r, s_clrlst[obj.id()].g, s_clrlst[obj.id()].b,
+               20);
+    glBegin(GL_LINES);
+    glVertex2f(obj.x()/rngx, obj.y()/rngy);
+    glVertex2f(obj.x()/rngx+obj.acceleration().x()/(rngx*0.03),
+               obj.y()/rngy+obj.acceleration().y()/(rngy*0.03));
+    glEnd();
 }

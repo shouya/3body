@@ -7,7 +7,7 @@
 class Object;
 class Cosmos;
 
-typedef std::vector<Object> objs_t;
+typedef std::vector<Object*> objs_t;
 
 class Object {
 public:
@@ -23,7 +23,6 @@ protected:
     double x_, y_;
     Vector a_;
     double mass_;
-
 
 public:
     unsigned int id(void) const { return id_; }

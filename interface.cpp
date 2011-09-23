@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include <GL/gl.h>
 #include <SDL/SDL.h>
 
@@ -6,13 +8,13 @@
 #include "painter.h"
 #include "cosmos.h"
 
-
+#include <cstdio>
 
 void Interface::init(void) {
     Uint32 flags;
 
-    atexit(SDL_Quit);
-    SDL_Init(SDL_INIT_VIDEO);
+    atexit(&SDL_Quit);
+    SDL_Init(SDL_INIT_EVERYTHING);
     SDL_EnableUNICODE(SDL_TRUE);
 
     flags = SDL_HWSURFACE | SDL_OPENGL | SDL_GL_DOUBLEBUFFER;
@@ -20,11 +22,11 @@ void Interface::init(void) {
     /*flags |= SDL_FULLSCREEN;*/
 
     sfc_ = SDL_SetVideoMode(
-        WIDTH, HEIGHT, 0, flags
+        WIDTH, HEIGHT, 32, flags
         );
 
     /* OpenGL */
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
     glViewport(0, 0, WIDTH, HEIGHT);
     glDisable(GL_DEPTH_TEST);
@@ -38,23 +40,26 @@ void Interface::init(void) {
     glLoadIdentity();
 
     /* data member intialization */
-    fps_ = 30;
+    fps_ = 30.0;
 }
 
 void Interface::mainLoop(void) {
-    int can_exit;
+    int can_exit = 0;
     SDL_Event event;
-    unsigned int tick;
-    int tick_time;
+    unsigned long nx_tick;
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    nx_tick = SDL_GetTicks() + (1000 / fps_);
 
     while (!can_exit) {
         if (SDL_PollEvent(&event)) {
             /* handle event */
             switch (event.type) {
             case SDL_KEYDOWN:
-                (event.key.keysm.sym == SDLK_q) && (can_exit = 1);
+                (event.key.keysym.sym == SDLK_q) && (can_exit = 1);
                 break;
-            case SDL_Quit:
+            case SDL_QUIT:
                 can_exit = 1;
                 break;
             default:;
@@ -67,11 +72,12 @@ void Interface::mainLoop(void) {
         }
 
         /* move event */
-        tick_time = (clock() - tick) / 1000 / fps_;
-        while (tick_time--) {
+        if (SDL_GetTicks() >= nx_tick) {
             cosmos_->doMove();
-            tick = clock();
+            nx_tick = SDL_GetTicks() + (1000 / fps_);
         }
+
+        SDL_Delay(1);
     }
 }
 

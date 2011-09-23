@@ -3,7 +3,6 @@
 
 #include <cmath>
 
-#define PI 3.141592654
 
 class Vector {
 public:
@@ -37,9 +36,19 @@ public:
 
 public:
     double length(void) const { return sqrt(x_*x_ + y_*y_); }
+#define PI 3.141592654
+
     double angle(void) const {
-        return (x_!=0)?(atan(y_/x_)): (y_>=0)?(PI/2):(3*PI/2);
+        if (x_ == 0) {
+            return (y_>=0) ? (PI/2) : (3*PI/2);
+        }
+        double v = atan(y_/x_);
+        if (x_ < 0) {
+            return v + PI;
+        }
+        return v;
     }
+#undef PI
     double x(void) const { return x_; }
     double y(void) const { return y_; }
 
@@ -49,7 +58,10 @@ public:
         return *this;
     }
     Vector& setPolar(double length, double angle) {
-        x_ = sin(angle) * length; y_ = cos(angle) * length;
+/*        printf("l, a, [%f], [%f]\n", length, angle);*/
+        x_ = cos(angle) * length;
+        y_ = sin(angle) * length;
+/*        printf("x,y, [%f, %f]\n", x_, y_);*/
         return *this;
     }
     void reset(void) {
