@@ -2,7 +2,7 @@ CC=gcc
 FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -g
 OUT=3body
 
-all: blackhole body cosmos interface mathlib object painter 3body
+all: blackhole body cosmos interface mathlib object painter 3body config
 	gcc $(FLAGS) -o $(OUT) *.o
 
 
@@ -30,6 +30,8 @@ painter: painter.cpp painter.h
 3body: 3body.cpp 3body.h
 	gcc -c $(FLAGS) 3body.cpp
 
+config: config.cpp config.h
+	gcc -c $(FLAGS) config.cpp
 
 
 clean:
