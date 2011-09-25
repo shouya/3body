@@ -19,6 +19,10 @@ public:
     void setCosmos(Cosmos* cosmos);
     void setPainter(Painter* painter);
 
+    void setScreenCoord(void);
+    void setNatureCoord(void);
+
+
     int dealHotkeys(SDL_keysym* key);
 
 private:

@@ -11,6 +11,8 @@
 
 #include <cstdio>
 
+
+
 void Interface::init(void) {
     Uint32 flags;
 
@@ -34,14 +36,13 @@ void Interface::init(void) {
     glViewport(0, 0, g_config.scrw_, g_config.scrh_);
     glDisable(GL_DEPTH_TEST);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    setNatureCoord();
 
-    glOrtho(-g_config.scrw_, g_config.scrw_,
-            g_config.scrh_, -g_config.scrh_, 10, 10);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 }
 
 void Interface::mainLoop(void) {
@@ -90,6 +91,28 @@ void Interface::setCosmos(Cosmos* cosmos) {
 
 void Interface::setPainter(Painter* painter) {
     painter_ = painter;
+}
+
+void Interface::setNatureCoord(void) {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(-g_config.scrw_, g_config.scrw_,
+            g_config.scrh_, -g_config.scrh_, 1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void Interface::setScreenCoord(void) {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(0, g_config.scrw_+1,
+            g_config.scrh_ , -1, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 

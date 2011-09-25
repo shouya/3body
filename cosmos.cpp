@@ -7,6 +7,7 @@
 
 #include "body.h"
 #include "blackhole.h"
+#include "misc.h"
 
 
 /* gravitational constant */
@@ -101,28 +102,24 @@ void Cosmos::doMove(void) {
 
 
 void Cosmos::mergeObjects(Object* o1, Object* o2) {
-    double m1 = o1->mass_,
-        m2 = o2->mass_;
+    /* make o1 the heavier one or blackhole */
+    if (o2->type_ == T_BLACKHOLE) {
+        if (o1->type_ == T_BLACKHOLE) {
+            if (o1->mass_ < o2->mass_) {
+                swap(o1, o2);
+            }
+        } else {
+            swap(o1, o2);
+        }
+    } else if (o1->mass_ < o2->mass_) {
+        swap(o1, o2);
+    }
 
-    double new_x = m1 < m2 ? o2->x_ : o1->x_,
-        new_y = m1 < m2 ? o2->y_ : o1->y_;
-    double new_ax = (o1->a_.x() * m1 + o2->a_.x() * m2) / (m1+m2),
-        new_ay = (o2->a_.x() * m1 + o2->a_.y() * m2) / (m1+m2);
-    double new_m = m1 + m2;
-    double new_r = sqrt(o1->r_*o1->r_ + o2->r_*o2->r_);
-    int new_type =
-        (((o1->type_|o2->type_) == (T_BODY|T_BODY)) ? T_BODY :
-         ((o1->type_|o2->type_) == (T_BODY|T_BLACKHOLE)) ? T_BLACKHOLE :
-         (/* two blackholes, merge them to one */T_BLACKHOLE));
-    
+    o1->a_.set(0, 0);
+    o1->mass_ = o1->mass_ + o2->mass_;
+    o1->r_ = sqrt(pow(o1->r_,2) + pow(o2->r_,2));
 
-    /* solute accel speed too big as follow way, not a beatiful implement */
-    new_ax = new_ay = 0;
-
-    nobjs_.push_back(Cosmos::createObject(new_type, new_x, new_y,
-                                          new_m, new_r, new_ax, new_ay));
-
-    o1->to_del_ = o2->to_del_ = 1;
+    o2->to_del_ = 1;
 }
 
 

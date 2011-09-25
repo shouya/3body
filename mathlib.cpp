@@ -43,10 +43,10 @@ Vector gravitation(const Object& theObj, const Object& target, double G) {
 
 
 void drawCircle(float x, float y, double radius,
-                float r, float g, float b, int div_parts) {
+                int r, int g, int b, int div_parts) {
     int i = 0;
     glBegin(GL_TRIANGLE_FAN);
-    glColor3f(r, g, b);
+    glColor3ub(r, g, b);
     glVertex2f(x, y);
     for (; i != div_parts + 1; ++i) {
         glVertex2f(x + radius*cos(2*PI/div_parts * i),

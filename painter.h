@@ -14,12 +14,17 @@ public:
 private:
 
     void drawObject(Interface* interface, const Object& obj) const;
+    void drawTips(Interface* interface) const;
+
+    void drawObjectList(Interface* interface) const;
+    void drawFPS(void) const;
 
 private:
     struct color_list_t {
-        float r, g, b;
+        unsigned char r, g, b;
     };
     static struct color_list_t* s_clrlst;
+    static const int s_num_clrlst;
 };
 
 #endif /* __PAINTER_H__ */

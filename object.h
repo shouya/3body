@@ -45,7 +45,9 @@ public:
     double radius(void) const { return r_; }
     int type(void) const { return type_; }
     int isDead(void) const { return (to_del_ != 0); }
+
     const Vector& acceleration(void) const { return a_; }
+    Vector& acceleration(void) { return a_; }
 
 public:
     virtual void move(void) {

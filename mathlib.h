@@ -12,6 +12,6 @@ double direction(const Object& theObj, const Object& target);
 Vector gravitation(const Object& theObj, const Object& target, double G);
 
 void drawCircle(float x, float y, double radius,
-                float r, float g, float b, int div_parts);
+                int r, int g, int b, int div_parts);
 
 #endif /* __MATHLIB_H__ */

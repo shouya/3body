@@ -3,7 +3,7 @@ FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -O2
 OUT=3body
 
 OBJS=3body.o blackhole.o body.o config.o cosmos.o interface.o mathlib.o \
- object.o painter.o
+ object.o painter.o graphics.o font.o misc.o
 
 all: $(OBJS)
 	gcc $(FLAGS) -o $(OUT) *.o
@@ -40,9 +40,17 @@ object.o: object.cpp object.h vector.h cosmos.h painter.h config.h
 	gcc -c $(FLAGS) $< 
 
 painter.o: painter.cpp painter.h interface.h mathlib.h vector.h object.h \
- cosmos.h config.h body.h
+ cosmos.h config.h body.h graphics.h
 	gcc -c $(FLAGS) $< 
 
+graphics.o: graphics.cpp graphics.h config.h font.h
+	gcc -c $(FLAGS) $<
+
+font.o: font.cpp font.h
+	gcc -c $(FLAGS) $<
+
+misc.o: misc.cpp misc.h
+	gcc -c $(FLAGS) $<
 
 clean:
 	rm -f *.o
