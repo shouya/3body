@@ -32,7 +32,11 @@ void Body::calcAccel(objs_t& pert_objs, const Cosmos& cosmos) {
     /* Newton's second law
      *    a = F/m
      */
-    tmpa /= mass_;
+    if (mass_) {
+        tmpa /= mass_;
+    } else {
+        tmpa /= INFINITESIMAL;
+    }
     a_ += tmpa;
 }
 

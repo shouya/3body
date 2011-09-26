@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -O2
+FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -g
 OUT=3body
 
 OBJS=3body.o blackhole.o body.o config.o cosmos.o interface.o mathlib.o \

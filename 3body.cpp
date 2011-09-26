@@ -15,11 +15,11 @@ int main(int argc, char** argv) {
     Interface* ui;
     Cosmos* cosmos;
 
-    g_config.loadConfig("3body.conf");
+    g_config.loadConfig(argv[1] ? argv[1] : "3body.conf");
     g_config.parseConfig();
 
     printf("config arguments:\n");
-    printf("fps: %f\n", g_config.fps_);
+    printf("fps: %f\n", g_config.mps_);
     printf("show trace: %s\n", g_config.show_trace_ ? "yes" : "no");
     printf("show motion line: %s\n", g_config.show_mline_ ? "yes" : "no");
     printf("full screen: %s\n", g_config.fulscr_ ? "yes" : "no");

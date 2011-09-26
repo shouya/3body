@@ -1,3 +1,7 @@
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+
 #include <GL/gl.h>
 
 #include "graphics.h"
@@ -16,6 +20,7 @@ void drawpixel(int x, int y, int r, int g, int b, int a) {
     if (x < 0 || y < 0 || x >= g_config.scrw_ || y >= g_config.scrh_) {
         return;
     }
+
     glBegin(GL_POINTS);
     glColor4ub(r, g, b, a);
     glVertex2i(x, y);
@@ -23,11 +28,39 @@ void drawpixel(int x, int y, int r, int g, int b, int a) {
 }
 
 int drawchar(int x, int y, int c, int r, int g, int b, int a) {
-    int i, j, w, bn = 0, ba = 0;
+    static GLint* vertex_ptr = new GLint[FONT_H*FONT_H*2];
+    static GLubyte* color_ptr = new GLubyte[FONT_H*FONT_H*4];
+    int i, j, w, bn = 0, ba = 0, ii = 0, bc = 0;
     char* rp = font_data + font_ptrs[c];
+
     w = *(rp++);
-    for (j = 0; j < FONT_H; ++j) {
-        for (i = 0; i < w; i++) {
+    if (x < 0 || y < 0 || x >= g_config.scrw_ || y >= g_config.scrh_) {
+        return (x + w);
+    }
+
+    bc = w * FONT_H;
+
+    for (j = 0; j != FONT_H; ++j)
+        for (i = 0; i != w; ++i) {
+            if (!bn) {
+                ba = *(rp++);
+                bn = 8;
+            }
+            vertex_ptr[2*ii] = x+i;
+            vertex_ptr[2*ii+1] = y+j;
+            color_ptr[4*ii] = r;
+            color_ptr[4*ii+1] = g;
+            color_ptr[4*ii+2] = b;
+            color_ptr[4*ii+3] = ((ba&3)*a)/3;
+            ba >>= 2;
+            bn -= 2;
+            ++ii;
+        }
+    glVertexPointer(2, GL_INT, 0, vertex_ptr);
+    glColorPointer(4, GL_UNSIGNED_BYTE, 0, color_ptr);
+    glDrawArrays(GL_POINTS, 0, bc);
+/*    for (j = 0; j < FONT_H; ++j) {
+        for (i = 0; i < w; ++i) {
             if (!bn) {
                 ba = *(rp++);
                 bn = 8;
@@ -36,7 +69,8 @@ int drawchar(int x, int y, int c, int r, int g, int b, int a) {
             ba >>= 2;
             bn -= 2;
         }
-    }
+        }*/
+
     return (x + w);
 }
 
@@ -62,6 +96,10 @@ int drawtext(int x, int y, const char* s, int r, int g, int b, int a) {
             case 'r':
                 r = 255;
                 g = b = 0;
+                break;
+            case 'e':
+                g = 255;
+                r = b = 0;
                 break;
             case 'b':
                 r = g = 0;
@@ -100,4 +138,29 @@ void drawrect(int x, int y, int w, int h, int r, int g, int b, int a) {
     glVertex2i(x+w, y+h);
     glVertex2i(x, y+h);
     glEnd();
+}
+
+unsigned char* pixels = NULL;
+
+void resetpixels(void) {
+    if (pixels) {
+        memset(pixels, 0, g_config.scrw_ * g_config.scrh_ * 4 * sizeof(char));
+    }
+}
+
+void storepixels(void) {
+    if (!pixels) {
+        pixels = (unsigned char*)malloc(g_config.scrw_ * g_config.scrh_ * 4
+                                        * sizeof(unsigned char));
+    }
+    glReadPixels(0, 0, g_config.scrw_, g_config.scrh_,
+                 GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+}
+
+void restorepixels(void) {
+    if (!pixels) {
+        return;
+    }
+    glDrawPixels(g_config.scrw_, g_config.scrh_,
+                 GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 }

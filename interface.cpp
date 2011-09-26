@@ -1,4 +1,4 @@
-#include <time.h>
+#include <ctime>
 
 #include <GL/gl.h>
 #include <SDL/SDL.h>
@@ -8,6 +8,7 @@
 #include "painter.h"
 #include "cosmos.h"
 #include "config.h"
+#include "graphics.h"
 
 #include <cstdio>
 
@@ -30,6 +31,8 @@ void Interface::init(void) {
         g_config.scrw_, g_config.scrh_, 32, flags
         );
 
+    SDL_WM_SetCaption("Three Body 1.3", NULL);
+
     /* OpenGL */
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
@@ -39,6 +42,8 @@ void Interface::init(void) {
     setNatureCoord();
 
     glEnable(GL_BLEND);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -52,7 +57,7 @@ void Interface::mainLoop(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    nx_tick = SDL_GetTicks() + (1000 / g_config.fps_);
+    nx_tick = SDL_GetTicks() + (1000 / g_config.mps_);
 
     while (!can_exit) {
         if (SDL_PollEvent(&event)) {
@@ -77,8 +82,10 @@ void Interface::mainLoop(void) {
 
         /* move event */
         if (SDL_GetTicks() >= nx_tick) {
-            cosmos_->doMove();
-            nx_tick = SDL_GetTicks() + (1000 / g_config.fps_);
+            if (!g_config.pause_) {
+                cosmos_->doMove();
+            }
+            nx_tick = SDL_GetTicks() + (1000 / g_config.mps_);
         }
 
         SDL_Delay(1);
@@ -122,15 +129,18 @@ int Interface::dealHotkeys(SDL_keysym* key) {
         return 1; /* return non-zero means exit */
     case SDLK_t:
         g_config.show_trace_ = !g_config.show_trace_;
+        resetpixels();
         break;
     case SDLK_m:
         g_config.show_mline_ = !g_config.show_mline_;
         break;
     case SDLK_LEFTBRACKET:
-        --g_config.fps_;
+        --g_config.mps_;
+        if (g_config.mps_ < 1) g_config.mps_ = 1;
         break;
     case SDLK_RIGHTBRACKET:
-        ++g_config.fps_;
+        ++g_config.mps_;
+        if (g_config.mps_ > 150) g_config.mps_ = 150;
         break;
     case SDLK_c:
         if (g_config.display_mode_ == DISPLAY_MASS) {
@@ -139,6 +149,8 @@ int Interface::dealHotkeys(SDL_keysym* key) {
             g_config.display_mode_ = DISPLAY_MASS;
         }
         break;
+    case SDLK_SPACE:
+        g_config.pause_ = !g_config.pause_;
     default:;
     }
     return 0;

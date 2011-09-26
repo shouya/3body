@@ -54,11 +54,12 @@ void Painter::draw(Interface* interface) const {
 
     /* comment next line to show trace */
     
-    if (!g_config.show_trace_) {
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    }
+    glClear(GL_COLOR_BUFFER_BIT/*|GL_DEPTH_BUFFER_BIT*/);
 
     interface->setNatureCoord();
+    if (g_config.show_trace_) {
+        restorepixels();
+    }
 
     glPushMatrix();
     while (it != interface->cosmos_->objects().end()) {
@@ -66,6 +67,10 @@ void Painter::draw(Interface* interface) const {
         ++it;
     }
     glPopMatrix();
+
+    if (g_config.show_trace_) {
+        storepixels();
+    }
 
     interface->setScreenCoord();
     drawTips(interface);
@@ -108,28 +113,51 @@ void Painter::drawObject(Interface* interface, const Object& obj) const {
 }
 
 void Painter::drawTips(Interface* interface) const {
-    drawObjectList(interface);
-    drawFPS();
-}
-
-void Painter::drawFPS(void) const {
     static unsigned long last_clock = SDL_GetTicks();
     static char strbuf[50] = {0};
-    
-    sprintf(strbuf, "\bwFPS: %.1f", 1000.0/(SDL_GetTicks() - last_clock));
-    drawtext(0, 0, strbuf, 0,0,0,255);
+    int x = 1;
+    int y = 1;
+
+    drawObjectList(interface);
+
+    /* draw FPS */
+    sprintf(strbuf, "\bwFPS: \br%4.1f", 1000.0/(SDL_GetTicks() - last_clock));
+    drawtext(x, y, strbuf, 0,0,0,255);
     last_clock = SDL_GetTicks();
+
+    /* draw display mode */
+    sprintf(strbuf, "\bwMode: \br%s",
+            g_config.display_mode_ == DISPLAY_MASS ? "M" : "R");
+    drawtext(x += 60, y, strbuf, 0,0,0,255);
+
+    /* draw trace/motion_line */
+    sprintf(strbuf, "\bwTrace: %s",
+            g_config.show_trace_ ? "\beY" : "\brN");
+    drawtext(x += 50, y, strbuf, 0,0,0,255);
+    sprintf(strbuf, "\bwMLine: %s",
+            g_config.show_mline_ ? "\beY" : "\brN");
+    drawtext(x += 50, y, strbuf, 0,0,0,255);
+
+
+    /* draw MPS */
+    sprintf(strbuf, "\bwMPS: \br%.1f", g_config.mps_);
+    drawtext(x += 50, y, strbuf, 0,0,0,255);
+
+    /* draw if pause */
+    if (g_config.pause_) {
+        drawtext(x += 50, y, "PAUSED", 0,255,255,255);
+    }
 }
 
 void Painter::drawObjectList(Interface* interface) const {
-    int x = 0, y = FONT_H+2, id;
+    int x = 1, y = FONT_H+2, id;
     static objs_t::const_iterator it;
     static stringstream ss;
     
     it = interface->cosmos_->objects().begin();
     ss.str("");
 
-    drawrect(x, y - 1, g_config.scrw_,
+    drawrect(x, y - 1, g_config.scrw_ - 1,
              (FONT_H+2)*interface->cosmos_->objects().size() - 2,
              127, 127, 127, 127);
 
@@ -137,19 +165,17 @@ void Painter::drawObjectList(Interface* interface) const {
         id = (*it)->id();
         x = drawtext(x, y, "# ",
                      s_clrlst[id].r, s_clrlst[id].g, s_clrlst[id].b, 255);
-        ss << "\bw";
         ss << id << " ";
         ss << ((*it)->type() == T_BLACKHOLE ? "BLACKHOLE" :
                (*it)->type() == T_BODY ? "BODY" : "UNKOWN");
         ss << fixed << "(" << (*it)->x() << ", " << (*it)->y() << ")";
         ss << " - " << (*it)->mass() << " - ";
-        ss << "(" << (*it)->acceleration().x() << ", "
-           << (*it)->acceleration().y() << ")";
+        ss << (*it)->acceleration().length();
 
-        drawtext(x, y, ss.str().c_str(), 0, 0, 0, 127);
+        drawtext(x, y, ss.str().c_str(), 255, 255, 255, 127);
 
         ss.str("");
-        x = 0;
+        x = 1;
         y += FONT_H + 2;
         ++it;
     }

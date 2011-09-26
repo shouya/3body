@@ -33,7 +33,7 @@ Vector gravitation(const Object& theObj, const Object& target, double G) {
         force /= pow(dist, 2);
 /*        printf("dist: [%f]\t", dist);*/
     } else {
-        force *= 99999999; /* time a very big number instead divide by zero */
+        force *= INFINITE; /* time a very big number instead divide by zero */
     }
     direct = direction(theObj, target);
 /*    printf ("direct: %f\n", direct * 180/PI);*/

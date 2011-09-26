@@ -4,6 +4,8 @@
 #include "vector.h"
 
 #define PI 3.141592654
+#define INFINITESIMAL 1e-30
+#define INFINITE 1e30
 
 class Object;
 

@@ -17,7 +17,6 @@ private:
     void drawTips(Interface* interface) const;
 
     void drawObjectList(Interface* interface) const;
-    void drawFPS(void) const;
 
 private:
     struct color_list_t {

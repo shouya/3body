@@ -17,25 +17,30 @@ Config Config::s_config;
 Config& g_config = Config::s_config;
 
 
-Config::Config(void) : fps_(30), gconst_(6.67e-7),
-                       xrng_(1e3), yrng_(1e3), scrw_(600), scrh_(600),
-                       show_trace_(0), show_mline_(1), fulscr_(0),
-                       merge_mode_(1),
-                       display_mode_(DISPLAY_MASS),
-                       precision_(20)
+Config::Config(void)
 {
+    init();
 }
 
-Config::Config(const string& config_file) :
-    fps_(30), gconst_(6.67e-7),
-    xrng_(1e3), yrng_(1e3), scrw_(600), scrh_(600),
-    show_trace_(0), show_mline_(1), fulscr_(0),
-    merge_mode_(1),
-    display_mode_(DISPLAY_MASS),
-    precision_(20)
+Config::Config(const string& config_file)
 {
+    init();
     loadConfig(config_file);
     parseConfig();
+}
+
+void Config::init(void) {
+    mps_ = 30;
+    gconst_ = 6.67e-7;
+    xrng_ = yrng_ = 1000;
+    scrw_ = scrh_ = 600;
+    show_trace_ = 0;
+    show_mline_ = 1;
+    fulscr_ = 0;
+    merge_mode_ = 1;
+    display_mode_ = DISPLAY_MASS;
+    precision_ = 20;
+    pause_ = 0;
 }
 
 void Config::loadConfig(const string& config_file) {
@@ -83,8 +88,8 @@ void Config::parseConfig(void) {
             for (; tok_it != grp_it->second.end(); ++tok_it) {
                 const string& key = tok_it->first;
                 const string& val = tok_it->second;
-                if (key == "FPS") {
-                    fps_ = atof(val.c_str());
+                if (key == "MPS") {
+                    mps_ = atof(val.c_str());
                 } else if (key == "SHOW_TRACE") {
                     show_trace_ = atol(val.c_str());
                 } else if (key == "SHOW_MOTION_LINE") {
@@ -145,7 +150,7 @@ void Config::parseConfig(void) {
                         parseFloat(grp_it->second["MASS"]),
                         parseFloat(grp_it->second["RADIUS"]),
                         parseFloat(grp_it->second["AX"]),
-                        parseFloat(grp_it->second["AX"]))
+                        parseFloat(grp_it->second["AY"]))
                     );
             } /* while n-- */
         } /* if (group name == "OBJ*") */

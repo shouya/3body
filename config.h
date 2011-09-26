@@ -30,11 +30,14 @@ public:
 public:
     static Config s_config;
 
+private:
+    void init(void);
+
 public:
     std::map<std::string, std::map<std::string, std::string> > token_;
     std::vector<Object*> objs_;
 
-    float fps_;
+    float mps_;
     double gconst_;
     long xrng_, yrng_;
     int scrw_, scrh_;
@@ -42,6 +45,8 @@ public:
     int merge_mode_;
     int display_mode_;
     int precision_;
+
+    int pause_;
 };
 
 extern Config& g_config;

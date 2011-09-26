@@ -17,4 +17,8 @@ int drawtext_outline(int x, int y, const char* s, int r, \
                      int g, int b, int a, int _or, int og, int ob, int oa);
 void drawrect(int x, int y, int w, int h, int r, int g, int b, int a);
 
+void resetpixels(void);
+void storepixels(void);
+void restorepixels(void);
+
 #endif /* __GRAPHICS_H__ */
