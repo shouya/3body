@@ -1,12 +1,13 @@
 CC=gcc
-FLAGS= -Wall -lstdc++ -lGL -lSDLmain -lSDL -lm -g
+FLAGS= -Wall -g
+LIBS = -lGL -lSDLmain -lSDL -lm -lstdc++ 
 OUT=3body
 
 OBJS=3body.o blackhole.o body.o config.o cosmos.o interface.o mathlib.o \
  object.o painter.o graphics.o font.o misc.o
 
 all: $(OBJS)
-	gcc $(FLAGS) -o $(OUT) *.o
+	gcc $(FLAGS) -o $(OUT) *.o $(LIBS)
 
 3body.o: 3body.cpp 3body.h interface.h cosmos.h object.h vector.h \
  painter.h config.h body.h blackhole.h
