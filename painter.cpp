@@ -46,14 +46,14 @@ Painter::Painter(void) {
             }
             }*/
     }
-    
+
 }
 
 void Painter::draw(Interface* interface) const {
     objs_t::const_iterator it = interface->cosmos_->objects().begin();
 
     /* comment next line to show trace */
-    
+
     glClear(GL_COLOR_BUFFER_BIT/*|GL_DEPTH_BUFFER_BIT*/);
 
     interface->setNatureCoord();
@@ -74,7 +74,7 @@ void Painter::draw(Interface* interface) const {
 
     interface->setScreenCoord();
     drawTips(interface);
-    
+
 
     SDL_GL_SwapBuffers();
 }
@@ -153,7 +153,7 @@ void Painter::drawObjectList(Interface* interface) const {
     int x = 1, y = FONT_H+2, id;
     static objs_t::const_iterator it;
     static stringstream ss;
-    
+
     it = interface->cosmos_->objects().begin();
     ss.str("");
 

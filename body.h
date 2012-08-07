@@ -7,7 +7,7 @@
 #define T_BODY 1
 
 class Body : public Object {
-public: 
+public:
     Body(double x, double y, double mass, double radius,
          const Vector& accel = Vector());
 

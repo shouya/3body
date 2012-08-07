@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     cosmos = new Cosmos();
     cosmos->loadFromConfig();
-    
+
     ui->setCosmos(cosmos);
     ui->setPainter(new Painter());
 

@@ -40,7 +40,7 @@ public:
     unsigned int id(void) const { return id_; }
     void setId(unsigned int id) { id_ = id; }
     double mass(void) const { return mass_; }
-    double x(void) const { return x_; } 
+    double x(void) const { return x_; }
     double y(void) const { return y_; }
     double radius(void) const { return r_; }
     int type(void) const { return type_; }

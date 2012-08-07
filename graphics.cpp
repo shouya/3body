@@ -123,10 +123,10 @@ int drawtext_outline(int x, int y, const char* s, int r, \
                      int g, int b, int a, int _or, int og, int ob, int oa) {
 	drawtext(x-1, y-1, s, _or, og, ob, oa);
 	drawtext(x+1, y+1, s, _or, og, ob, oa);
-	
+
 	drawtext(x-1, y+1, s, _or, og, ob, oa);
 	drawtext(x+1, y-1, s, _or, og, ob, oa);
-	
+
 	return drawtext(x, y, s, r, g, b, a);
 }
 
@@ -140,7 +140,7 @@ void drawrect(int x, int y, int w, int h, int r, int g, int b, int a) {
     glEnd();
 }
 
-unsigned char* pixels = NULL;
+static unsigned char* pixels = NULL;
 
 void resetpixels(void) {
     if (pixels) {

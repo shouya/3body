@@ -64,7 +64,7 @@ void Config::loadConfig(const string& config_file) {
             tokens.clear();
             continue;
         }
-        
+
         eqs_pos = line.find('=');
         if (eqs_pos == string::npos) {
             continue;
@@ -80,7 +80,7 @@ void Config::loadConfig(const string& config_file) {
 void Config::parseConfig(void) {
     map<string, map<string, string> >::iterator grp_it = token_.begin();
     map<string, string>::iterator tok_it;
-    
+
     srand(time(NULL));
     for (; grp_it != token_.end(); ++grp_it) {
         tok_it = grp_it->second.begin();
@@ -101,11 +101,11 @@ void Config::parseConfig(void) {
                 } else if (key == "SCREEN_WIDTH") {
                     scrw_ = atol(val.c_str());
                 } else if (key == "SCREEN_HEIGHT") {
-                    scrh_ = atol(val.c_str());  
+                    scrh_ = atol(val.c_str());
                 } else if (key == "G_CONSTANT") {
-                    gconst_ = atof(val.c_str()); 
+                    gconst_ = atof(val.c_str());
                 } else if (key == "FULLSCREEN") {
-                    fulscr_ = atol(val.c_str());  
+                    fulscr_ = atol(val.c_str());
                 } else if (key == "MERGE_MODE") {
                     merge_mode_ = atol(val.c_str());
                 } else if (key == "DISPLAY_MODE") {
@@ -119,7 +119,7 @@ void Config::parseConfig(void) {
                 } /* if (key == ***) */
             } /* for (tokit++) */
         } /* if (group name == "CONFIG") */
-        
+
         if (grp_it->first.substr(0,3) == "OBJ") {
             const string& type = grp_it->second["TYPE"];
             int n = parseInteger(grp_it->second["N"]);
@@ -146,7 +146,7 @@ void Config::parseConfig(void) {
                     Cosmos::createObject(
                         type_id,
                         parseFloat(grp_it->second["X"]),
-                        parseFloat(grp_it->second["Y"]), 
+                        parseFloat(grp_it->second["Y"]),
                         parseFloat(grp_it->second["MASS"]),
                         parseFloat(grp_it->second["RADIUS"]),
                         parseFloat(grp_it->second["AX"]),
@@ -174,7 +174,7 @@ long Config::parseInteger(const string& str) {
     ldel = rdel+1;
     rdel = str.find(')');
     ubound = atof(str.substr(ldel, rdel-ldel).c_str());
-    
+
     return rand()%((int)(ubound-lbound)) + lbound;
 }
 
@@ -194,6 +194,6 @@ double Config::parseFloat(const string& str) {
     ldel = rdel+1;
     rdel = str.find(')');
     ubound = atof(str.substr(ldel, rdel-ldel).c_str());
-    
+
     return (rand()%1000000/1000000.0) * (ubound-lbound) +lbound;
 }
