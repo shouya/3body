@@ -116,8 +116,12 @@ void Cosmos::mergeObjects(Object* o1, Object* o2) {
         swap(o1, o2);
     }
 
+    double m = o1->mass_ + o2->mass_;
+    double px = (o1->v_.x() * o1->mass_ + o2->v_.x() * o2->mass_);
+    double py = (o1->v_.y() * o1->mass_ + o2->v_.y() * o2->mass_);
     o1->a_.set(0, 0);
-    o1->mass_ = o1->mass_ + o2->mass_;
+    o1->v_.set(px / m, py / m);
+    o1->mass_ = m;
     o1->r_ = sqrt(pow(o1->r_,2) + pow(o2->r_,2));
 
     o2->to_del_ = 1;
