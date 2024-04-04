@@ -18,14 +18,16 @@ class Object {
 public:
     explicit Object(int type) : type_(type), id_(0), p_(), v_(),
         a_(), mass_(0), r_(0), to_del_(0) {}
-Object(int type, const Vector& pos) : type_(type), id_(0),
-    p_(pos), v_(), a_(), mass_(0), r_(0), to_del_(0) {}
-Object(int type, const Vector& pos, double mass, double radius) :
-    type_(type), id_(0), p_(pos), a_(), mass_(mass), r_(radius), to_del_() {}
-Object(int type, const Vector& pos, double mass, double radius,
-       const Vector& vel, const Vector& accel):
-    type_(type), id_(0), p_(pos), v_(vel), a_(accel),
-    mass_(mass), r_(radius), to_del_() {}
+    Object(int type, const Vector& pos) : type_(type), id_(0),
+        p_(pos), v_(), a_(), mass_(0), r_(0), to_del_(0) {}
+    Object(int type, const Vector& pos, double mass, double radius) :
+        type_(type), id_(0), p_(pos), a_(), mass_(mass), r_(radius), to_del_() {}
+    Object(int type, const Vector& pos, double mass, double radius,
+           const Vector& vel, const Vector& accel):
+        type_(type), id_(0), p_(pos), v_(vel), a_(accel),
+        mass_(mass), r_(radius), to_del_() {}
+
+    virtual ~Object(void) {};
 
 protected:
     int type_;
