@@ -149,9 +149,12 @@ void Config::parseConfig(void) {
                         parseFloat(grp_it->second["Y"]),
                         parseFloat(grp_it->second["MASS"]),
                         parseFloat(grp_it->second["RADIUS"]),
+                        parseFloat(grp_it->second["VX"]),
+                        parseFloat(grp_it->second["VY"]),
                         parseFloat(grp_it->second["AX"]),
-                        parseFloat(grp_it->second["AY"]))
-                    );
+                        parseFloat(grp_it->second["AY"])
+                    )
+                );
             } /* while n-- */
         } /* if (group name == "OBJ*") */
     } /* for each group */

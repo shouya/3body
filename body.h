@@ -8,7 +8,8 @@
 
 class Body : public Object {
 public:
-    Body(double x, double y, double mass, double radius,
+    Body(const Vector& pos, double mass, double radius,
+         const Vector& vel = Vector(),
          const Vector& accel = Vector());
 
     virtual void calcAccel(objs_t& pert_objs, const Cosmos& cosmos);

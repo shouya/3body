@@ -23,7 +23,7 @@ public:
     void deleteObject(objs_t::iterator& obj_it);
 
     void calcAccel(void);
-    void doMove(void);
+    void doMove(float dt);
 
     void mergeObjects(Object* o1, Object* o2);
 
@@ -40,6 +40,7 @@ public:
 public:
     static Object* createObject(int type, double x, double y,
                                 double mass, double radius,
+                                double vx, double vy,
                                 double ax, double ay);
 
 

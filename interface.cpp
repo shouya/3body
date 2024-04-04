@@ -53,11 +53,12 @@ void Interface::init(void) {
 void Interface::mainLoop(void) {
     int can_exit = 0;
     SDL_Event event;
-    unsigned long nx_tick;
+    unsigned long pv_tick, nx_tick, tick;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    nx_tick = SDL_GetTicks() + (1000 / g_config.mps_);
+    pv_tick = SDL_GetTicks();
+    nx_tick = pv_tick + (1000 / g_config.mps_);
 
     while (!can_exit) {
         if (SDL_PollEvent(&event)) {
@@ -81,10 +82,12 @@ void Interface::mainLoop(void) {
         }
 
         /* move event */
-        if (SDL_GetTicks() >= nx_tick) {
+        tick = SDL_GetTicks();
+        if (tick >= nx_tick) {
             if (!g_config.pause_) {
-                cosmos_->doMove();
+                cosmos_->doMove((float)(tick - pv_tick) / 1000.0);
             }
+            pv_tick = tick;
             nx_tick = SDL_GetTicks() + (1000 / g_config.mps_);
         }
 

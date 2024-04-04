@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS= -Wall -g -ffast-math -funsafe-math-optimizations
+FLAGS= -Wall -g -ffast-math -funsafe-math-optimizations -O3
 LIBS = -lGL -lSDLmain -lSDL -lm -lstdc++
 OUT=3body
 

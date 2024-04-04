@@ -36,12 +36,13 @@ void Cosmos::deleteObject(objs_t::iterator& obj_it) {
 
 Object* Cosmos::createObject(int type, double x, double y,
                              double mass, double radius,
+                             double vx, double vy,
                              double ax, double ay) {
     switch (type) {
     case T_BODY:
-        return new Body(x, y, mass, radius, Vector(ax, ay));
+        return new Body(Vector(x, y), mass, radius, Vector(vx, vy), Vector(ax, ay));
     case T_BLACKHOLE:
-        return new BlackHole(x, y, mass, radius);
+        return new BlackHole(Vector(x, y), mass, radius);
     default:;
     }
 
@@ -49,7 +50,7 @@ Object* Cosmos::createObject(int type, double x, double y,
 }
 
 
-void Cosmos::doMove(void) {
+void Cosmos::doMove(float dt) {
     objs_t::iterator it = objs_.begin(), it2;
 
     while (it != objs_.end()) {
@@ -60,11 +61,11 @@ void Cosmos::doMove(void) {
     for (; it != objs_.end(); ++it) {
         if ((*it)->to_del_ == 1) continue;
 
-        (*it)->move();
+        (*it)->move(dt);
 
         if (outOfRange(*it)) {
             printf("object[%d] dead(OOR), (%f,%f)\n",
-                   (*it)->id_, (*it)->x_, (*it)->y_);
+                   (*it)->id_, (*it)->x(), (*it)->y());
             (*it)->to_del_ = 1;
             continue;
         }
@@ -159,5 +160,3 @@ const int Cosmos::rangeX(void) const {
 const int Cosmos::rangeY(void) const {
     return rngy_;
 }
-
-
