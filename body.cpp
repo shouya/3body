@@ -37,5 +37,5 @@ void Body::calcAccel(objs_t& pert_objs, const Cosmos& cosmos) {
     } else {
         tmpa /= INFINITESIMAL;
     }
-    a_ += tmpa;
+    a_ = tmpa;
 }
