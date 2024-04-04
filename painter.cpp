@@ -106,8 +106,8 @@ void Painter::drawObject(Interface* interface, const Object& obj) const {
     if (g_config.show_mline_) {
         glBegin(GL_LINES);
         glVertex2f(x, y);
-        glVertex2f(x + obj.acceleration().x()/(rngx*0.03),
-                   y + obj.acceleration().y()/(rngy*0.03));
+        glVertex2f(x + obj.velocity().x() * 0.001,
+                   y + obj.velocity().y() * 0.001);
         glEnd();
     }
 }
@@ -180,4 +180,3 @@ void Painter::drawObjectList(Interface* interface) const {
         ++it;
     }
 }
-
