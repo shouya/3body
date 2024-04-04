@@ -73,7 +73,7 @@ SHOW_MOTION_LINE      布爾      是否顯示運動向量             1
 RANGE_X/RANGE_Y       實數      宇宙大小                    1000x1000
 SCREEN_WIDTH/
     SCREEN_HEIGHT     整數      窗口大小/分辨率(全屏情況下)    600x600
-G_CONSTANT            實數      萬有引力常量                6.67e-7
+G_CONSTANT            實數      萬有引力常量                0.001
 <s>MASS_SCALE            實數      根據質量顯示物體的縮放因子     1e10</s>
 FULLSCRREN            布爾      是否全屏                    0
 MERGE_MODE            布爾      是否開啓合併模式            1

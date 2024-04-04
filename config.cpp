@@ -31,7 +31,7 @@ Config::Config(const string& config_file)
 
 void Config::init(void) {
     mps_ = 30;
-    gconst_ = 6.67e-7;
+    gconst_ = 0.001;
     xrng_ = yrng_ = 1000;
     scrw_ = scrh_ = 600;
     show_trace_ = 0;
